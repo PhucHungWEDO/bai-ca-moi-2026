@@ -1,0 +1,53 @@
+[
+  {
+    "id": "1",
+    "hymn_number": "001",
+    "title": "NgayThatTonQuyPhuocLanh",
+    "category": "Ngợi khen",
+    "image_url": "/hymns/1-NgayThatTonQuyPhuocLanh.png",
+    "keywords": [
+      "khởi đầu",
+      "ngợi khen",
+      "tươi mới"
+    ],
+    "vibes": [
+      "hân hoan",
+      "bình an"
+    ],
+    "duration_seconds": 180
+  },
+  {
+    "id": "2",
+    "hymn_number": "002",
+    "title": "PhuocLanhCuaNgaySabat",
+    "category": "Cầu nguyện",
+    "image_url": "/hymns/2-PhuocLanhCuaNgaySabat.png",
+    "keywords": [
+      "tâm hồn",
+      "tĩnh lặng",
+      "cầu nguyện"
+    ],
+    "vibes": [
+      "bình an",
+      "sâu lắng"
+    ],
+    "duration_seconds": 150
+  },
+  {
+    "id": "3",
+    "hymn_number": "003",
+    "title": "NgaySabatPhuocLanh",
+    "category": "Tin Cậy",
+    "image_url": "/hymns/3-NgaySabatPhuocLanh.png",
+    "keywords": [
+      "bước chân",
+      "vui thỏa",
+      "tin cậy"
+    ],
+    "vibes": [
+      "hân hoan",
+      "phấn khởi"
+    ],
+    "duration_seconds": 150
+  }
+]
