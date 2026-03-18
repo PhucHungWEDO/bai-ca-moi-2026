@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎵 BÀI CA MỚI 2026 - Quản lý Nhạc Thánh
 
-## Getting Started
+Hệ thống quản lý và trình chiếu lời bài hát, hợp âm cho nhóm thờ phượng. Được tối ưu hóa cho tốc độ và trải nghiệm di động.
 
-First, run the development server:
+## 🚀 Tính năng cốt lõi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Tìm kiếm thông minh:** Tìm theo tiêu đề, từ khóa và lời bài hát (Fuzzy Search).
+- **Trình chiếu Mobile:** Hỗ trợ phóng to/thu nhỏ (pinch-to-zoom) để ca viên dễ dàng theo dõi.
+- **Bảo mật:** Truy cập thông qua Passcode được cấu hình qua Biến môi trường.
+- **Hiệu suất 10/10:** Kiến trúc tĩnh chạy trên Next.js & Vercel.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Lệnh CLI Thực chiến
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Dành cho việc quản lý hàng ngày:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` : Chạy môi trường thử nghiệm tại localhost:3000.
+- `git add .` : Gom các thay đổi (lời bài hát, giao diện).
+- `git commit -m "Mô tả thay đổi"` : Ghi chú nội dung cập nhật.
+- `git push origin main` : Đẩy code lên GitHub & Tự động Deploy lên Vercel.
 
-## Learn More
+## 📁 Cấu trúc thư mục ngăn nắp
 
-To learn more about Next.js, take a look at the following resources:
+- `src/data/hymns_data.json`: Nơi chứa toàn bộ dữ liệu 400 bài hát.
+- `public/hymns/`: Thư mục chứa ảnh bản nhạc gốc.
+- `src/app/`: Chứa giao diện và logic của ứng dụng.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Dự án được xây dựng với mục tiêu phụng sự và tối ưu hóa cuộc sống theo tinh thần Cơ Đốc.*

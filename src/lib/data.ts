@@ -9,6 +9,7 @@ export interface Hymn {
   keywords: string[];
   vibes: string[];
   duration_seconds: number;
+  lyrics?: string;
 }
 
 export const getAllHymns = (): Hymn[] => {
@@ -31,11 +32,13 @@ export const searchHymns = (query: string): Hymn[] => {
     const normalizedTitle = removeAccents(hymn.title);
     const normalizedNumber = hymn.hymn_number.toLowerCase();
     const keywordsMatch = hymn.keywords.some(kw => removeAccents(kw).includes(normalizedQuery));
+    const lyricsMatch = hymn.lyrics ? removeAccents(hymn.lyrics).includes(normalizedQuery) : false;
     
     return (
       normalizedTitle.includes(normalizedQuery) ||
       normalizedNumber.includes(normalizedQuery) ||
-      keywordsMatch
+      keywordsMatch ||
+      lyricsMatch
     );
   });
 };
