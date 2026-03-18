@@ -1,16 +1,17 @@
-"use client";
-
-// File: src/app/admin/data/[id]/page.tsx
-
 import { getAllHymns } from "@/lib/data";
 import LyricsForm from "@/components/LyricsForm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-export default function LyricsPage({ params }: { params: { id: string } }) {
+export default async function LyricsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const hymns = getAllHymns();
-  const hymn = hymns.find((h: any) => h.id === params.id);
+  const hymn = hymns.find((h: any) => String(h.id) === id);
 
   if (!hymn) notFound();
 
