@@ -7,18 +7,40 @@ interface Hymn {
   id: string | number;
   hymn_number: string | number;
   title: string;
-  duration_seconds: number;
+  duration_seconds: number | string; // Allow string for mm:ss display in form
   vibes: string[];
   keywords: string | string[];
   lyrics?: string;
 }
+
+const secondsToMinutes = (seconds: number | string) => {
+  if (typeof seconds === "string") return seconds; // Already formatted
+  if (!seconds) return "00:00";
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
+
+const minutesToSeconds = (timestamp: string) => {
+  if (!timestamp || !timestamp.includes(":")) return parseInt(timestamp, 10) || 0;
+  const parts = timestamp.split(":");
+  const mins = parseInt(parts[0], 10) || 0;
+  const secs = parseInt(parts[1], 10) || 0;
+  return mins * 60 + secs;
+};
 
 interface AdminFormProps {
   initialData: Hymn[];
 }
 
 export default function AdminForm({ initialData }: AdminFormProps) {
-  const [hymns, setHymns] = useState<Hymn[]>(initialData);
+  // Convert initial numeric seconds to mm:ss strings for the form
+  const [hymns, setHymns] = useState<Hymn[]>(() => 
+    initialData.map(h => ({
+      ...h,
+      duration_seconds: secondsToMinutes(h.duration_seconds)
+    }))
+  );
   const [isDirty, setIsDirty] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [expandedId, setExpandedId] = useState<string | number | null>(null);
@@ -59,10 +81,7 @@ export default function AdminForm({ initialData }: AdminFormProps) {
         } else if (field === "duration_seconds") {
           updated[index] = {
             ...updated[index],
-            duration_seconds:
-              value === ""
-                ? 0
-                : parseInt(value, 10) || updated[index].duration_seconds,
+            duration_seconds: value,
           };
         } else if (field === "vibes") {
           updated[index] = {
@@ -95,10 +114,16 @@ export default function AdminForm({ initialData }: AdminFormProps) {
     setStatus({ type: null, message: "" });
     startTransition(async () => {
       try {
+        // Convert mm:ss strings back to numbers before saving
+        const dataToSave = hymns.map(h => ({
+          ...h,
+          duration_seconds: minutesToSeconds(String(h.duration_seconds))
+        }));
+
         const response = await fetch("/api/save-hymn", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hymns }),
+          body: JSON.stringify({ hymns: dataToSave }),
         });
         
         const res = await response.json();
@@ -217,15 +242,14 @@ export default function AdminForm({ initialData }: AdminFormProps) {
 
                   <div>
                     <label className="block text-xs font-medium text-slate-500 mb-1">
-                      Thời lượng (giây)
+                      Thời lượng (mm:ss)
                     </label>
                     <input
-                      type="number"
-                      value={hymn.duration_seconds || ""}
+                      type="text"
+                      value={hymn.duration_seconds}
                       onChange={(e) => handleUpdate(index, "duration_seconds", e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
-                      placeholder="0"
-                      min={0}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-mono"
+                      placeholder="03:45"
                     />
                   </div>
 
