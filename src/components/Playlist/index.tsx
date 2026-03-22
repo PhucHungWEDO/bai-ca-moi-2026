@@ -1,16 +1,30 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { generateVibePlaylist, getAllAvailableVibes } from "@/lib/playlist";
 import type { Hymn, PlaylistResult } from "@/lib/playlist";
-import { searchHymns, getAllHymns } from "@/lib/data";
 import { Play, Sparkles, RefreshCw, X, ChevronRight, Music, Plus, Minus, Search as SearchIcon, ListMusic } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
+function useHymns() {
+  const [hymns, setHymns] = useState<Hymn[]>([]);
+  useEffect(() => {
+    fetch("/api/hymns")
+      .then((r) => r.json())
+      .then(setHymns)
+      .catch(console.error);
+  }, []);
+  return hymns;
+}
+
+function removeAccents(str: string) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 export default function PlaylistContainer() {
-  const [activeTab, setActiveTab] = useState<'smart' | 'manual'>('smart');
+  const [activeTab, setActiveTab] = useState<"smart" | "manual">("smart");
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pt-12 relative pb-28 md:pb-20">
@@ -18,13 +32,13 @@ export default function PlaylistContainer() {
         {/* Header & Tabs */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center p-3 bg-indigo-50 rounded-2xl mb-4 text-indigo-500">
-            {activeTab === 'smart' ? <Sparkles className="w-8 h-8" /> : <ListMusic className="w-8 h-8" />}
+            {activeTab === "smart" ? <Sparkles className="w-8 h-8" /> : <ListMusic className="w-8 h-8" />}
           </div>
           <h2 className="text-3xl font-light text-slate-900 tracking-tight">
             Tạo <span className="font-medium text-indigo-600">Playlist</span>
           </h2>
           <p className="mt-3 text-slate-500 max-w-md mx-auto">
-            {activeTab === 'smart' 
+            {activeTab === "smart"
               ? "Hệ thống tự động chọn ra 3 bài hát cùng cảm xúc, với tổng thời lượng chính xác 8 phút hoặc 9 phút rưỡi."
               : "Tự do lựa chọn danh sách các bài hát theo ý muốn và theo dõi tổng thời lượng."}
           </p>
@@ -34,19 +48,23 @@ export default function PlaylistContainer() {
         <div className="flex justify-center mb-8">
           <div className="flex p-1.5 bg-slate-200/50 rounded-2xl">
             <button
-              onClick={() => setActiveTab('smart')}
+              onClick={() => setActiveTab("smart")}
               className={cn(
                 "px-6 py-2.5 rounded-xl font-medium text-sm transition-all focus:outline-none",
-                activeTab === 'smart' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+                activeTab === "smart"
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               )}
             >
               Smart Vibe
             </button>
             <button
-              onClick={() => setActiveTab('manual')}
+              onClick={() => setActiveTab("manual")}
               className={cn(
                 "px-6 py-2.5 rounded-xl font-medium text-sm transition-all focus:outline-none",
-                activeTab === 'manual' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+                activeTab === "manual"
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               )}
             >
               Tạo Thủ Công
@@ -64,7 +82,7 @@ export default function PlaylistContainer() {
             transition={{ duration: 0.2 }}
             className="flex-1 w-full flex flex-col items-center"
           >
-            {activeTab === 'smart' ? <SmartPlaylist /> : <ManualPlaylist />}
+            {activeTab === "smart" ? <SmartPlaylist /> : <ManualPlaylist />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -77,22 +95,29 @@ export default function PlaylistContainer() {
 // -------------------------------------------------------------------------------- //
 function ManualPlaylist() {
   const router = useRouter();
-  const allHymns = getAllHymns();
+  const allHymns = useHymns();
   const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  
+
   const results = useMemo(() => {
     if (!query) return allHymns;
-    return searchHymns(query);
+    const q = removeAccents(query.toLowerCase().trim());
+    return allHymns.filter((hymn) => {
+      return (
+        removeAccents(hymn.title).includes(q) ||
+        hymn.hymn_number.toLowerCase().includes(q) ||
+        hymn.keywords.some((kw) => removeAccents(kw).includes(q))
+      );
+    });
   }, [query, allHymns]);
 
   const toggleSelect = (id: string) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
-  const getHymnById = (id: string) => allHymns.find(h => h.id === id);
+  const getHymnById = (id: string) => allHymns.find((h) => h.id === id);
 
   const totalDuration = selectedIds.reduce((sum, id) => {
     return sum + (getHymnById(id)?.duration_seconds || 0);
@@ -144,14 +169,14 @@ function ManualPlaylist() {
         {results.map((hymn) => {
           const isSelected = selectedIds.includes(hymn.id);
           const queueIndex = isSelected ? selectedIds.indexOf(hymn.id) + 1 : null;
-          
+
           return (
             <div
               key={hymn.id}
               onClick={() => toggleSelect(hymn.id)}
               className={cn(
                 "group flex items-center gap-4 p-3 pr-4 rounded-2xl border transition-all cursor-pointer active:scale-[0.98]",
-                isSelected 
+                isSelected
                   ? "bg-indigo-50/50 border-indigo-200 shadow-sm"
                   : "bg-white border-slate-100 hover:border-slate-300 hover:shadow-sm"
               )}
@@ -170,7 +195,7 @@ function ManualPlaylist() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-start mb-0.5">
                   <h3 className={cn("font-medium text-base truncate", isSelected ? "text-indigo-900" : "text-slate-900")}>
@@ -190,8 +215,8 @@ function ManualPlaylist() {
               <button
                 className={cn(
                   "w-10 h-10 rounded-full flex flex-shrink-0 items-center justify-center transition-colors focus:outline-none",
-                  isSelected 
-                    ? "bg-red-50 text-red-500 hover:bg-red-100" 
+                  isSelected
+                    ? "bg-red-50 text-red-500 hover:bg-red-100"
                     : "bg-slate-50 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600"
                 )}
               >
@@ -202,7 +227,7 @@ function ManualPlaylist() {
         })}
       </div>
 
-      {/* Floating Bottom Bar for Queue Summary */}
+      {/* Floating Bottom Bar */}
       <AnimatePresence>
         {selectedIds.length > 0 && (
           <motion.div
@@ -220,7 +245,7 @@ function ManualPlaylist() {
                   </span>
                   <span className="text-slate-300">•</span>
                   <span className="text-base font-bold text-green-400 bg-green-500/10 px-3 py-1 rounded-md">
-                    Tổng thời lượng: {formatDuration(totalDuration)}
+                    Tổng: {formatDuration(totalDuration)}
                   </span>
                 </div>
               </div>
@@ -262,11 +287,12 @@ function SmartPlaylist() {
   };
 
   const handleNext = () => {
-    if (result?.hymns && currentIndex < result.hymns.length - 1) setCurrentIndex(prev => prev + 1);
+    if (result?.hymns && currentIndex < result.hymns.length - 1)
+      setCurrentIndex((prev) => prev + 1);
   };
 
   const handlePrev = () => {
-    if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
+    if (currentIndex > 0) setCurrentIndex((prev) => prev - 1);
   };
 
   const formatDuration = (seconds: number) => {
@@ -286,11 +312,10 @@ function SmartPlaylist() {
             <button
               key={vibe}
               onClick={() => setSelectedVibe(vibe)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                selectedVibe === vibe
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${selectedVibe === vibe
                   ? "bg-indigo-600 text-white shadow-md"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
+                }`}
             >
               {vibe.charAt(0).toUpperCase() + vibe.slice(1)}
             </button>
@@ -303,7 +328,7 @@ function SmartPlaylist() {
         <button
           onClick={handleGenerate}
           disabled={!selectedVibe || isGenerating}
-          className="w-full flex justify-center items-center gap-2 py-4 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+          className="w-full flex justify-center items-center gap-2 py-4 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isGenerating ? (
             <RefreshCw className="w-5 h-5 animate-spin" />
@@ -328,62 +353,62 @@ function SmartPlaylist() {
                 </span>
               </div>
 
-              <div className="relative w-full aspect-[2/3] max-h-[500px] mb-6 rounded-2xl overflow-hidden bg-slate-100 group">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentIndex}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute inset-0"
-                    >
-                       {result.hymns[currentIndex].image_url ? (
-                         <img 
-                           src={result.hymns[currentIndex].image_url}
-                           alt={result.hymns[currentIndex].title}
-                           className="w-full h-full object-contain"
-                         />
-                       ) : (
-                         <div className="w-full h-full flex items-center justify-center">
-                            <Music className="w-16 h-16 text-slate-300" />
-                         </div>
-                       )}
-                    </motion.div>
-                  </AnimatePresence>
+              <div className="relative w-full aspect-[2/3] max-h-[500px] mb-6 rounded-2xl overflow-hidden bg-slate-100">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentIndex}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute inset-0"
+                  >
+                    {result.hymns[currentIndex].image_url ? (
+                      <img
+                        src={result.hymns[currentIndex].image_url}
+                        alt={result.hymns[currentIndex].title}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Music className="w-16 h-16 text-slate-300" />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
 
-                  {currentIndex > 0 && (
-                    <button 
-                      onClick={handlePrev}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow-md text-slate-800 hover:bg-white transition-colors z-10"
-                    >
-                      <ChevronRight className="w-6 h-6 rotate-180" />
-                    </button>
-                  )}
-                  {currentIndex < result.hymns.length - 1 && (
-                    <button 
-                      onClick={handleNext}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow-md text-slate-800 hover:bg-white transition-colors z-10"
-                    >
-                       <ChevronRight className="w-6 h-6" />
-                    </button>
-                  )}
+                {currentIndex > 0 && (
+                  <button
+                    onClick={handlePrev}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow-md text-slate-800 hover:bg-white transition-colors z-10"
+                  >
+                    <ChevronRight className="w-6 h-6 rotate-180" />
+                  </button>
+                )}
+                {currentIndex < result.hymns.length - 1 && (
+                  <button
+                    onClick={handleNext}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow-md text-slate-800 hover:bg-white transition-colors z-10"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                )}
 
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
-                     <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest mb-1 block">
-                        Bài {currentIndex + 1} / 3
-                     </span>
-                     <h4 className="text-white font-medium text-lg truncate">
-                        {result.hymns[currentIndex].title}
-                     </h4>
-                     <p className="text-white/70 text-sm mt-1">
-                        Bài {result.hymns[currentIndex].hymn_number} • {formatDuration(result.hymns[currentIndex].duration_seconds)}
-                     </p>
-                  </div>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
+                  <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest mb-1 block">
+                    Bài {currentIndex + 1} / 3
+                  </span>
+                  <h4 className="text-white font-medium text-lg truncate">
+                    {result.hymns[currentIndex].title}
+                  </h4>
+                  <p className="text-white/70 text-sm mt-1">
+                    Bài {result.hymns[currentIndex].hymn_number} • {formatDuration(result.hymns[currentIndex].duration_seconds)}
+                  </p>
+                </div>
               </div>
-              
-              <a 
-                href={`/viewer/${result.hymns[0].id}?playlist=${result.hymns.map(h => h.id).join(",")}`}
+
+              <a
+                href={`/viewer/${result.hymns[0].id}?playlist=${result.hymns.map((h) => h.id).join(",")}`}
                 className="w-full flex items-center justify-center py-3 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition-colors gap-2"
               >
                 <Play className="w-4 h-4" /> Bắt đầu Trình Chiếu

@@ -1,13 +1,53 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search as SearchIcon, X, Music } from "lucide-react";
-import { searchHymns } from "@/lib/data";
+
+interface Hymn {
+  id: string;
+  hymn_number: string;
+  title: string;
+  category: string;
+  image_url: string;
+  keywords: string[];
+  vibes: string[];
+  duration_seconds: number;
+  lyrics?: string;
+}
+
+function removeAccents(str: string) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
 
 export default function Search() {
   const [query, setQuery] = useState("");
+  const [hymns, setHymns] = useState<Hymn[]>([]);
 
-  const results = useMemo(() => searchHymns(query), [query]);
+  useEffect(() => {
+    fetch("/api/hymns")
+      .then((r) => r.json())
+      .then(setHymns)
+      .catch(console.error);
+  }, []);
+
+  const results = useMemo(() => {
+    if (!query) return hymns;
+    const q = removeAccents(query.toLowerCase().trim());
+    return hymns.filter((hymn) => {
+      const keywordsMatch = hymn.keywords.some((kw) =>
+        removeAccents(kw).includes(q)
+      );
+      const lyricsMatch = hymn.lyrics
+        ? removeAccents(hymn.lyrics).includes(q)
+        : false;
+      return (
+        removeAccents(hymn.title).includes(q) ||
+        hymn.hymn_number.toLowerCase().includes(q) ||
+        keywordsMatch ||
+        lyricsMatch
+      );
+    });
+  }, [query, hymns]);
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-theme(spacing.16)-theme(spacing.20))] md:min-h-[calc(100vh-theme(spacing.16))]">
@@ -39,12 +79,14 @@ export default function Search() {
       {/* Results */}
       <div className="flex-1 w-full max-w-2xl mx-auto px-4 py-4">
         <p className="text-xs text-slate-400 mb-3 px-1">
-          {query
+          {hymns.length === 0
+            ? "Đang tải..."
+            : query
             ? `${results.length} kết quả cho "${query}"`
             : `Tất cả ${results.length} bài hát`}
         </p>
 
-        {results.length === 0 ? (
+        {hymns.length > 0 && results.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
               <SearchIcon className="w-8 h-8 text-slate-400" strokeWidth={1.5} />
@@ -62,7 +104,6 @@ export default function Search() {
                   index !== results.length - 1 ? "border-b border-slate-100" : ""
                 }`}
               >
-                {/* Thumbnail nhỏ */}
                 <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 flex items-center justify-center border border-slate-200">
                   {hymn.image_url ? (
                     <img
@@ -76,7 +117,6 @@ export default function Search() {
                   )}
                 </div>
 
-                {/* Text */}
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-slate-900 text-sm truncate">
                     {hymn.title}
@@ -87,7 +127,6 @@ export default function Search() {
                   </p>
                 </div>
 
-                {/* Arrow */}
                 <span className="text-slate-300 text-lg flex-shrink-0">›</span>
               </a>
             ))}
