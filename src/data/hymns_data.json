@@ -1,7 +1,7 @@
 [
   {
     "id": "001",
-    "hymn_number": "127",
+    "hymn_number": "001",
     "title": "NgayThatTonQuyPhuocLanh",
     "category": "Bài Ca Mới",
     "image_url": "/hymns/001-NgayThatTonQuyPhuocLanh.webp",
@@ -15,11 +15,11 @@
     "duration_seconds": 179
   },
   {
-    "id": "001",
-    "hymn_number": "128",
-    "title": "NgayThatTonQuyPhuocLanh",
+    "id": "002",
+    "hymn_number": "002",
+    "title": "PhuocLanhCuaNgaySabat",
     "category": "Bài Ca Mới",
-    "image_url": "/hymns/001-NgayThatTonQuyPhuocLanh.webp",
+    "image_url": "/hymns/002-PhuocLanhCuaNgaySabat.webp",
     "keywords": [
       "vinh hiển",
       "tôn cao"
@@ -30,21 +30,11 @@
     "duration_seconds": 180
   },
   {
-    "id": "002",
-    "hymn_number": "029",
-    "title": "PhuocLanhCuaNgaySabat",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/002-PhuocLanhCuaNgaySabat.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "002",
-    "hymn_number": "129",
-    "title": "PhuocLanhCuaNgaySabat",
+    "id": "003",
+    "hymn_number": "003",
+    "title": "NgaySabatPhuocLanh",
     "category": "Bài Ca Mới",
-    "image_url": "/hymns/002-PhuocLanhCuaNgaySabat.webp",
+    "image_url": "/hymns/003-NgaySabatPhuocLanh.webp",
     "keywords": [
       "vinh hiển",
       "quyền năng"
@@ -55,98 +45,38 @@
     "duration_seconds": 180
   },
   {
-    "id": "003",
+    "id": "029",
+    "hymn_number": "029",
+    "title": "OVinhHienCuaGierusalem",
+    "category": "Bài Ca Phụ",
+    "image_url": "/hymns/029-OVinhHienCuaGierusalem.webp",
+    "keywords": [],
+    "vibes": [],
+    "duration_seconds": 180
+  },
+  {
+    "id": "033",
     "hymn_number": "033",
-    "title": "NgaySabatPhuocLanh",
+    "title": "NuocSuSongTuonTrao",
     "category": "Bài Ca Phụ",
-    "image_url": "/hymns/003-NgaySabatPhuocLanh.webp",
+    "image_url": "/hymns/033-NuocSuSongTuonTrao.webp",
     "keywords": [],
     "vibes": [],
     "duration_seconds": 180
   },
   {
-    "id": "003",
+    "id": "056",
     "hymn_number": "056",
-    "title": "NgaySabatPhuocLanh",
+    "title": "HayHatXuongBangBaiCaMoi",
     "category": "Bài Ca Phụ",
-    "image_url": "/hymns/003-NgaySabatPhuocLanh.webp",
+    "image_url": "/hymns/056-HayHatXuongBangBaiCaMoi.webp",
     "keywords": [],
     "vibes": [],
     "duration_seconds": 180
   },
   {
-    "id": "029",
+    "id": "060",
     "hymn_number": "060",
-    "title": "OVinhHienCuaGierusalem",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/029-OVinhHienCuaGierusalem.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "029",
-    "hymn_number": "072",
-    "title": "OVinhHienCuaGierusalem",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/029-OVinhHienCuaGierusalem.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "033",
-    "hymn_number": "073",
-    "title": "NuocSuSongTuonTrao",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/033-NuocSuSongTuonTrao.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "033",
-    "hymn_number": "111",
-    "title": "NuocSuSongTuonTrao",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/033-NuocSuSongTuonTrao.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "056",
-    "hymn_number": "121",
-    "title": "HayHatXuongBangBaiCaMoi",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/056-HayHatXuongBangBaiCaMoi.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "056",
-    "hymn_number": "153",
-    "title": "HayHatXuongBangBaiCaMoi",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/056-HayHatXuongBangBaiCaMoi.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "060",
-    "hymn_number": "211",
-    "title": "HoiKeHauViecHomGiaoUoc",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/060-HoiKeHauViecHomGiaoUoc.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "060",
-    "hymn_number": "221",
     "title": "HoiKeHauViecHomGiaoUoc",
     "category": "Bài Ca Phụ",
     "image_url": "/hymns/060-HoiKeHauViecHomGiaoUoc.webp",
@@ -160,26 +90,6 @@
     "title": "KhongCoLoiNaoDienTaNoiTuSauTrongLong",
     "category": "Bài Ca Phụ",
     "image_url": "/hymns/072-KhongCoLoiNaoDienTaNoiTuSauTrongLong.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "072",
-    "hymn_number": "429",
-    "title": "KhongCoLoiNaoDienTaNoiTuSauTrongLong",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/072-KhongCoLoiNaoDienTaNoiTuSauTrongLong.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "073",
-    "hymn_number": "073",
-    "title": "LayThuaChaChinhNgaiDaYeu",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/073-LayThuaChaChinhNgaiDaYeu.webp",
     "keywords": [],
     "vibes": [],
     "duration_seconds": 180
@@ -205,41 +115,11 @@
     "duration_seconds": 180
   },
   {
-    "id": "111",
-    "hymn_number": "111",
-    "title": "PhuocChoNguoiNao",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/111-PhuocChoNguoiNao.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
     "id": "121",
     "hymn_number": "121",
     "title": "NgoiSaoCuaSion",
     "category": "Bài Ca Phụ",
     "image_url": "/hymns/121-NgoiSaoCuaSion.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "121",
-    "hymn_number": "121",
-    "title": "NgoiSaoCuaSion",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/121-NgoiSaoCuaSion.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "153",
-    "hymn_number": "153",
-    "title": "DucChuaTroiChaCuaToiDaDenRoi",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/153-DucChuaTroiChaCuaToiDaDenRoi.webp",
     "keywords": [],
     "vibes": [],
     "duration_seconds": 180
@@ -265,41 +145,11 @@
     "duration_seconds": 180
   },
   {
-    "id": "211",
-    "hymn_number": "211",
-    "title": "GhiKhacSauTrongTamLongMe",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/211-GhiKhacSauTrongTamLongMe.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
     "id": "221",
     "hymn_number": "221",
     "title": "NuocThienDangOTrongToi",
     "category": "Bài Ca Phụ",
     "image_url": "/hymns/221-NuocThienDangOTrongToi.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "221",
-    "hymn_number": "221",
-    "title": "NuocThienDangOTrongToi",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/221-NuocThienDangOTrongToi.webp",
-    "keywords": [],
-    "vibes": [],
-    "duration_seconds": 180
-  },
-  {
-    "id": "429",
-    "hymn_number": "429",
-    "title": "ViKenHanhQuanDaDuocThoi",
-    "category": "Bài Ca Phụ",
-    "image_url": "/hymns/429-ViKenHanhQuanDaDuocThoi.webp",
     "keywords": [],
     "vibes": [],
     "duration_seconds": 180
