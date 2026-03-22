@@ -55,6 +55,8 @@ export default function AdminForm({ initialData }: AdminFormProps) {
         const updated = [...prev];
         if (field === "id") {
           updated[index] = { ...updated[index], id: value };
+        } else if (field === "title") {
+          updated[index] = { ...updated[index], title: value };
         } else if (field === "duration_seconds") {
           updated[index] = {
             ...updated[index],
@@ -83,37 +85,6 @@ export default function AdminForm({ initialData }: AdminFormProps) {
     []
   );
 
-  const handleSingleSave = async (index: number) => {
-    const originalHymn = initialData[index];
-    const currentHymn = hymns[index];
-
-    setStatus({ type: null, message: "" });
-    startTransition(async () => {
-      try {
-        const response = await fetch("/api/save-hymn", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            oldId: originalHymn.id,
-            updatedHymn: currentHymn,
-          }),
-        });
-
-        const res = await response.json();
-        if (res.success) {
-          setStatus({
-            type: "success",
-            message: `Bài #${currentHymn.hymn_number} đã được lưu thành công!`,
-          });
-        } else {
-          setStatus({ type: "error", message: `Lỗi: ${res.error}` });
-        }
-      } catch (err: any) {
-        setStatus({ type: "error", message: `Lỗi kết nối: ${err.message}` });
-      }
-    });
-  };
-
   const handleSave = () => {
     if (
       !window.confirm(
@@ -127,10 +98,7 @@ export default function AdminForm({ initialData }: AdminFormProps) {
       const res = await saveHymnsData(hymns);
       if (res.success) {
         setIsDirty(false);
-        setStatus({
-          type: "success",
-          message: "Đã lưu thành công!",
-        });
+        setStatus({ type: "success", message: "Đã lưu thành công!" });
       } else {
         setStatus({ type: "error", message: `Lỗi: ${res.error}` });
       }
@@ -196,50 +164,47 @@ export default function AdminForm({ initialData }: AdminFormProps) {
             >
               {/* Card Header */}
               <div className="p-4">
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <div>
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                      Bài {hymn.hymn_number}
-                    </span>
-                    <h3 className="font-medium text-slate-900 mt-0.5 text-sm leading-snug">
-                      {hymn.title}
-                    </h3>
-                  </div>
-
-                  <button
-                    onClick={() => handleSingleSave(index)}
-                    disabled={isPending}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all border border-indigo-100 disabled:opacity-50"
-                  >
-                    {isPending ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                    ) : (
-                      <Save className="w-3 h-3" />
-                    )}
-                    Lưu bài này
-                  </button>
+                <div className="mb-4">
+                  <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                    Bài {hymn.hymn_number}
+                  </span>
+                  <h3 className="font-medium text-slate-900 mt-0.5 text-sm leading-snug">
+                    {hymn.title}
+                  </h3>
                 </div>
 
                 {/* Fields */}
                 <div className="space-y-3">
-                  <div className="relative">
+                  <div>
                     <label className="block text-xs font-medium text-slate-500 mb-1">
                       Mã số (ID)
                     </label>
                     <input
                       type="text"
                       value={hymn.id}
-                      onChange={(e) =>
-                        handleUpdate(index, "id", e.target.value)
-                      }
+                      onChange={(e) => handleUpdate(index, "id", e.target.value)}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-mono"
                       placeholder="001"
                     />
-                    <div className="mt-1 flex items-center gap-1.5 text-[10px] text-amber-600 font-medium">
-                      <AlertTriangle className="w-3 h-3" />
-                      Cẩn thận khi sửa ID vì nó ảnh hưởng đến tên file ảnh .webp tương ứng.
-                    </div>
+                    <p className="mt-1 flex items-center gap-1 text-[10px] text-amber-600 font-medium">
+                      <AlertTriangle className="w-3 h-3 shrink-0" />
+                      Cẩn thận khi sửa ID — ảnh hưởng đến file ảnh .webp tương ứng.
+                    </p>
                   </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-1">
+                      Tên bài hát
+                    </label>
+                    <input
+                      type="text"
+                      value={hymn.title}
+                      onChange={(e) => handleUpdate(index, "title", e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
+                      placeholder="Tên bài hát..."
+                    />
+                  </div>
+
                   <div>
                     <label className="block text-xs font-medium text-slate-500 mb-1">
                       Thời lượng (giây)
@@ -247,14 +212,13 @@ export default function AdminForm({ initialData }: AdminFormProps) {
                     <input
                       type="number"
                       value={hymn.duration_seconds || ""}
-                      onChange={(e) =>
-                        handleUpdate(index, "duration_seconds", e.target.value)
-                      }
+                      onChange={(e) => handleUpdate(index, "duration_seconds", e.target.value)}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
                       placeholder="0"
                       min={0}
                     />
                   </div>
+
                   <div>
                     <label className="block text-xs font-medium text-slate-500 mb-1">
                       Vibes (ngăn cách bởi dấu phẩy)
@@ -262,13 +226,12 @@ export default function AdminForm({ initialData }: AdminFormProps) {
                     <input
                       type="text"
                       value={hymn.vibes?.join(", ") || ""}
-                      onChange={(e) =>
-                        handleUpdate(index, "vibes", e.target.value)
-                      }
+                      onChange={(e) => handleUpdate(index, "vibes", e.target.value)}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
                       placeholder="vui, buồn, tạ ơn"
                     />
                   </div>
+
                   <div>
                     <label className="block text-xs font-medium text-slate-500 mb-1">
                       Từ khoá
@@ -276,9 +239,7 @@ export default function AdminForm({ initialData }: AdminFormProps) {
                     <input
                       type="text"
                       value={getKeywordsString(hymn.keywords)}
-                      onChange={(e) =>
-                        handleUpdate(index, "keywords", e.target.value)
-                      }
+                      onChange={(e) => handleUpdate(index, "keywords", e.target.value)}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
                       placeholder="Thái độ, Tin Tưởng"
                     />
@@ -307,9 +268,7 @@ export default function AdminForm({ initialData }: AdminFormProps) {
                 <div className="p-4 border-t border-slate-100">
                   <textarea
                     value={hymn.lyrics || ""}
-                    onChange={(e) =>
-                      handleUpdate(index, "lyrics", e.target.value)
-                    }
+                    onChange={(e) => handleUpdate(index, "lyrics", e.target.value)}
                     rows={10}
                     placeholder={"Nhập lời bài hát...\n\nVerse 1:\n...\n\nChorus:\n..."}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono leading-relaxed focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all resize-y"
