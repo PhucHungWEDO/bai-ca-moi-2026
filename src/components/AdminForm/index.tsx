@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition, useEffect, useCallback } from "react";
-import { saveHymnsData } from "@/lib/actions";
 import { Loader2, Save, CheckCircle, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 
 interface Hymn {
@@ -95,12 +94,23 @@ export default function AdminForm({ initialData }: AdminFormProps) {
     }
     setStatus({ type: null, message: "" });
     startTransition(async () => {
-      const res = await saveHymnsData(hymns);
-      if (res.success) {
-        setIsDirty(false);
-        setStatus({ type: "success", message: "Đã lưu thành công!" });
-      } else {
-        setStatus({ type: "error", message: `Lỗi: ${res.error}` });
+      try {
+        const response = await fetch("/api/save-hymn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hymns }),
+        });
+        
+        const res = await response.json();
+        
+        if (res.success) {
+          setIsDirty(false);
+          setStatus({ type: "success", message: "Đã lưu thành công!" });
+        } else {
+          setStatus({ type: "error", message: `Lỗi: ${res.error}` });
+        }
+      } catch (err: any) {
+        setStatus({ type: "error", message: `Lỗi kết nối: ${err.message}` });
       }
     });
   };

@@ -3,7 +3,6 @@
 // File: src/components/LyricsForm/index.tsx
 
 import { useState, useTransition, useEffect } from "react";
-import { saveLyrics } from "@/lib/actions";
 import { Loader2, Save, CheckCircle, AlertTriangle } from "lucide-react";
 
 interface Hymn {
@@ -48,12 +47,26 @@ export default function LyricsForm({ hymn }: { hymn: Hymn }) {
   const handleSave = () => {
     setStatus({ type: null, message: "" });
     startTransition(async () => {
-      const res = await saveLyrics(String(hymn.id), lyrics);
-      if (res.success) {
-        setIsDirty(false);
-        setStatus({ type: "success", message: "Đã lưu lời bài hát!" });
-      } else {
-        setStatus({ type: "error", message: `Lỗi: ${res.error}` });
+      try {
+        const response = await fetch("/api/save-hymn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            oldId: hymn.id,
+            updatedHymn: { lyrics }
+          }),
+        });
+
+        const res = await response.json();
+        
+        if (res.success) {
+          setIsDirty(false);
+          setStatus({ type: "success", message: "Đã lưu lời bài hát!" });
+        } else {
+          setStatus({ type: "error", message: `Lỗi: ${res.error}` });
+        }
+      } catch (err: any) {
+        setStatus({ type: "error", message: `Lỗi kết nối: ${err.message}` });
       }
     });
   };

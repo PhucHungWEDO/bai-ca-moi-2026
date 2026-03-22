@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import hymnsData from "@/data/hymns_data.json";
 
 export interface Hymn {
   id: string;
@@ -14,9 +13,7 @@ export interface Hymn {
 }
 
 export const getAllHymns = (): Hymn[] => {
-  const dataPath = path.join(process.cwd(), "src/data/hymns_data.json");
-  const raw = fs.readFileSync(dataPath, "utf8");
-  return JSON.parse(raw) as Hymn[];
+  return hymnsData as Hymn[];
 };
 
 const removeAccents = (str: string) => {

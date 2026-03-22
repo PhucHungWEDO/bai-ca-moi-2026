@@ -1,9 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import fs from "fs/promises";
-import path from "path";
-import { revalidatePath } from "next/cache";
 
 // Simple in-memory rate limiting (in production this should use Redis or similar)
 const rateLimitMap = new Map<string, { attempts: number; timestamp: number }>();
@@ -49,46 +46,5 @@ export async function verifyPasscode(formData: FormData) {
     rateLimitMap.set(clientIp, rateLimit);
 
     return { success: false, error: "Mã PIN không đúng." };
-  }
-}
-
-export async function saveHymnsData(hymns: any[]) {
-  try {
-    const dataPath = path.join(process.cwd(), "src/data/hymns_data.json");
-    await fs.writeFile(dataPath, JSON.stringify(hymns, null, 2), "utf8");
-
-    revalidatePath("/admin/data");
-    revalidatePath("/search");
-    revalidatePath("/playlist");
-
-    return { success: true };
-  } catch (error: any) {
-    console.error("Lỗi khi lưu dữ liệu:", error);
-    return { success: false, error: error.message };
-  }
-}
-
-export async function saveLyrics(id: string, lyrics: string) {
-  try {
-    const dataPath = path.join(process.cwd(), "src/data/hymns_data.json");
-    const raw = await fs.readFile(dataPath, "utf8");
-    const hymns = JSON.parse(raw);
-
-    const index = hymns.findIndex((h: any) => String(h.id) === id);
-    if (index === -1) {
-      return { success: false, error: "Không tìm thấy bài hát." };
-    }
-
-    hymns[index].lyrics = lyrics;
-
-    await fs.writeFile(dataPath, JSON.stringify(hymns, null, 2), "utf8");
-
-    revalidatePath(`/admin/data/${id}`);
-    revalidatePath(`/viewer/${id}`);
-
-    return { success: true };
-  } catch (error: any) {
-    console.error("Lỗi khi lưu lyrics:", error);
-    return { success: false, error: error.message };
   }
 }
